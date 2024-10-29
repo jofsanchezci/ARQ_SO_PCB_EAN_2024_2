@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat en tiempo real</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chat {
+            width: 400px;
+            height: 400px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+        #message-input {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat en tiempo real</h1>
+    <div id="chat"></div>
+    <input id="message-input" type="text" placeholder="Escribe un mensaje...">
+    <button onclick="sendMessage()">Enviar</button>
+
+    <script>
+        const socket = io();
+
+        // Escuchar los mensajes recibidos del servidor
+        socket.on('message', function(msg) {
+            let chat = document.getElementById('chat');
+            let newMessage = document.createElement('div');
+            newMessage.innerHTML = msg;
+            chat.appendChild(newMessage);
+            chat.scrollTop = chat.scrollHeight;  // Scroll hacia abajo
+        });
+
+        // Enviar un mensaje al servidor
+        function sendMessage() {
+            let input = document.getElementById('message-input');
+            let message = input.value;
+            socket.send(message);
+            input.value = '';  // Limpiar el campo de texto
+        }
+    </script>
+</body>
+</html>
